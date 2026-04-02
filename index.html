@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Panchayat - Society Super App</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app-container">
+        <!-- Top App Bar / Header -->
+        <header id="main-header" class="hidden">
+            <div class="user-greeting">
+                <div class="avatar">
+                    <img src="https://i.pravatar.cc/150?img=12" alt="User Avatar">
+                </div>
+                <div class="greeting-text">
+                    <span class="hello">Hello, Rohan!</span>
+                    <span class="apartment">Apt 102, Block A</span>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button class="icon-btn" aria-label="Notifications" id="notification-btn">
+                    <i class="fa-solid fa-bell"></i>
+                    <span class="badge">3</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <main id="view-container">
+            <!-- Views Injected -->
+        </main>
+
+        <!-- Emergency / SOS Overlay -->
+        <div id="sos-modal" class="modal-overlay hidden">
+            <div class="modal-content glass-card">
+                <h2>Emergency Assistance</h2>
+                <p>What kind of emergency is this?</p>
+                <div class="sos-options">
+                    <button class="sos-btn blue"><i class="fa-solid fa-shield-halved"></i> Security</button>
+                    <button class="sos-btn red"><i class="fa-solid fa-fire"></i> Fire</button>
+                    <button class="sos-btn green"><i class="fa-solid fa-truck-medical"></i> Ambulance</button>
+                </div>
+                <button class="btn-secondary close-modal" id="close-sos">Cancel</button>
+            </div>
+        </div>
+
+        <!-- Success Toast -->
+        <div id="toast" class="toast hidden">
+            <i class="fa-solid fa-circle-check"></i> <span id="toast-msg">Success!</span>
+        </div>
+
+        <!-- Bottom Navigation Bar -->
+        <nav id="bottom-nav" class="hidden">
+            <button class="nav-item active" data-view="home">
+                <i class="fa-solid fa-house"></i>
+                <span>Home</span>
+            </button>
+            <button class="nav-item" data-view="complaints">
+                <i class="fa-solid fa-clipboard-list"></i>
+                <span>Complaints</span>
+            </button>
+            <button class="nav-item bot-nav-btn pulse" data-view="chat">
+                <div class="ai-icon-wrapper">
+                    <i class="fa-solid fa-robot"></i>
+                </div>
+                <span>Rulebook</span>
+            </button>
+            <button class="nav-item" data-view="services">
+                <i class="fa-solid fa-screwdriver-wrench"></i>
+                <span>Services</span>
+            </button>
+            <button class="nav-item" data-view="community">
+                <i class="fa-solid fa-users"></i>
+                <span>Community</span>
+            </button>
+        </nav>
+    </div>
+
+    <!-- Templates -->
+    <template id="tpl-login">
+        <section class="view active-view flex-col-app" id="view-login" style="justify-content: center; align-items: center; padding: 24px; position: relative; overflow: hidden; height: 100%;">
+            <!-- Decorative Background Elements -->
+            <div class="bg-circle c1"></div>
+            <div class="bg-circle c2"></div>
+
+            <div class="login-container glass-card slide-in" style="width: 100%; max-width: 400px; padding: 32px; position: relative; z-index: 10;">
+                <div class="brand-logo pulse-slow">
+                    <i class="fa-brands fa-envira"></i>
+                </div>
+                <h1 style="text-align:center; margin-bottom: 8px; font-weight: 800; font-size: 2rem; color: var(--accent-teal);">Panchayat</h1>
+                <p style="text-align:center; color: var(--text-muted); margin-bottom: 32px; font-weight: 500;">Your smart society, in your pocket.</p>
+                
+                <div class="login-methods">
+                    <button class="social-btn interact-google interactive" onclick="app.mockLogin('Google')">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google">
+                        <span style="flex:1; text-align:center; padding-right:24px;">Continue with Google</span>
+                    </button>
+                    
+                    <button class="social-btn interact-phone interactive mt-sm" onclick="app.mockLogin('Phone')">
+                        <i class="fa-solid fa-phone" style="color: var(--accent-blue); font-size: 1.2rem;"></i>
+                        <span style="flex:1; text-align:center; padding-right:24px;">Continue with Phone Number</span>
+                    </button>
+                    
+                    <div class="divider">
+                        <span>OR</span>
+                    </div>
+                    
+                    <form id="email-login-form" onsubmit="event.preventDefault(); app.mockLogin('Email');">
+                        <div class="input-group">
+                            <i class="fa-regular fa-envelope"></i>
+                            <input type="email" placeholder="Email Address" required>
+                        </div>
+                        <div class="input-group mt-sm">
+                            <i class="fa-solid fa-lock"></i>
+                            <input type="password" placeholder="Password" required>
+                        </div>
+                        <button type="submit" class="btn-primary full-width mt-md interactive" style="box-shadow: 0 4px 15px rgba(13,148,136,0.3);">Sign In</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </template>
+
+    <template id="tpl-home">
+        <section class="view" id="view-home">
+            <div class="hero-sos" id="trigger-sos">
+                <div class="sos-ring"></div>
+                <div class="sos-ring delay"></div>
+                <button class="sos-main-btn">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    <span>SOS Emergency</span>
+                </button>
+            </div>
+
+            <div class="section-container mt-sm">
+                <h3 class="section-title">Quick Actions</h3>
+                <div class="quick-actions-grid">
+                    <button class="action-card interactive" onclick="app.navigate('complaints')">
+                        <div class="icon-circle bg-purple"><i class="fa-solid fa-microphone"></i></div>
+                        <span>Raise Issue</span>
+                    </button>
+                    <button class="action-card interactive" onclick="app.navigate('community')">
+                        <div class="icon-circle bg-orange"><i class="fa-solid fa-bullhorn"></i></div>
+                        <span>Notices</span>
+                    </button>
+                    <button class="action-card interactive" onclick="app.navigate('chat')">
+                        <div class="icon-circle bg-teal"><i class="fa-solid fa-book"></i></div>
+                        <span>Rulebook</span>
+                    </button>
+                    <button class="action-card interactive" onclick="app.navigate('services')">
+                        <div class="icon-circle bg-blue"><i class="fa-solid fa-wrench"></i></div>
+                        <span>Book Vendor</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="section-container mt-lg">
+                <div class="widget glass-card interactive">
+                    <div class="widget-header">
+                        <i class="fa-solid fa-bolt text-yellow"></i>
+                        <h4>Active Complaints</h4>
+                    </div>
+                    <div class="widget-body">
+                        <p class="status-badge warning">In Progress</p>
+                        <p class="widget-desc mt-sm">Water leak in master bathroom</p>
+                        <span class="widget-meta">Raised 2 hours ago by You</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </template>
+
+    <template id="tpl-complaints">
+        <section class="view" id="view-complaints">
+            <h2 class="page-title">Issue Tracker</h2>
+            <div class="voice-recorder-container glass-wrapper mt-md">
+                <div class="recorder-ripple hidden" id="voice-ripple">
+                    <div class="ring r1"></div>
+                    <div class="ring r2"></div>
+                </div>
+                <button class="mic-button interactive" id="record-btn">
+                    <i class="fa-solid fa-microphone-lines"></i>
+                </button>
+                <p class="recorder-text" id="recorder-status">Tap to speak the issue</p>
+            </div>
+
+            <div class="ai-processing-panel hidden mt-md" id="ai-panel">
+                <div class="ai-header">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> AI Analysis Processed
+                </div>
+                <div class="ai-result">
+                    <p class="transcription">"Water is leaking in the kitchen."</p>
+                    <div class="tags">
+                        <span class="tag">Plumbing</span>
+                        <span class="tag priority-high">High Priority</span>
+                    </div>
+                </div>
+                <button class="btn-primary full-width mt-md interactive" id="submit-complaint">Submit Formal Complaint</button>
+                <button class="btn-secondary full-width mt-sm interactive" id="retry-record">Re-record</button>
+            </div>
+        </section>
+    </template>
+
+    <template id="tpl-chat">
+        <section class="view flex-col-app" id="view-chat">
+            <div class="chat-header glass-card">
+                <div class="bot-avatar pulse"><i class="fa-solid fa-robot"></i></div>
+                <div>
+                    <h3 style="font-weight:700;">AI Rulebook Bot</h3>
+                    <p class="status text-teal"><i class="fa-solid fa-circle text-teal" style="font-size:0.5rem; vertical-align:middle;"></i> Online & Ready</p>
+                </div>
+            </div>
+            
+            <div class="chat-messages" id="chat-messages">
+                <div class="message bot slide-in">
+                    <p>Namaste Rohan! I know the society rulebook by heart. Ask me anything about visitors, gym timings, or policies!</p>
+                </div>
+            </div>
+
+            <div class="chat-suggestions-grid" id="chat-suggestions">
+                <button class="suggestion-card interactive mode-gym"><i class="fa-solid fa-dumbbell"></i> <span>Gym Hours</span></button>
+                <button class="suggestion-card interactive mode-guest"><i class="fa-solid fa-car"></i> <span>Visitor Parking</span></button>
+                <button class="suggestion-card interactive mode-noise"><i class="fa-solid fa-volume-high"></i> <span>Noise Rules</span></button>
+            </div>
+
+            <div class="chat-input-area glass-card">
+                <div class="input-wrapper">
+                    <input type="text" id="chat-input" placeholder="Type your query...">
+                    <button class="chat-send interactive" id="chat-send-btn"><i class="fa-solid fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </section>
+    </template>
+
+    <template id="tpl-services">
+        <section class="view" id="view-services">
+            <h2 class="page-title">Book a Service</h2>
+            <div class="search-bar glass-card">
+                <i class="fa-solid fa-magnifying-glass text-muted"></i>
+                <input type="text" placeholder="Find verified plumbers, maids...">
+            </div>
+
+            <div class="categories-grid mt-lg">
+                <div class="cat-card active interactive">
+                    <div class="cat-icon bg-blue"><i class="fa-solid fa-border-all"></i></div>
+                    <span>All</span>
+                </div>
+                <div class="cat-card interactive">
+                    <div class="cat-icon bg-teal"><i class="fa-solid fa-plug"></i></div>
+                    <span>Electrical</span>
+                </div>
+                <div class="cat-card interactive">
+                    <div class="cat-icon bg-purple"><i class="fa-solid fa-faucet-drip"></i></div>
+                    <span>Plumbing</span>
+                </div>
+                <div class="cat-card interactive">
+                    <div class="cat-icon bg-orange"><i class="fa-solid fa-broom"></i></div>
+                    <span>Cleaning</span>
+                </div>
+            </div>
+
+            <h3 class="section-title mt-lg" style="margin-bottom:8px;">Top Rated Providers</h3>
+            <div class="provider-list">
+                <div class="provider-card glass-card interactive hover-lift">
+                    <img src="https://i.pravatar.cc/150?img=11" alt="Ram">
+                    <div class="provider-info">
+                        <h4 style="display:flex; align-items:center; gap:4px;">Ram Kumar <i class="fa-solid fa-circle-check text-blue" title="Verified"></i></h4>
+                        <p>Senior Plumber</p>
+                        <div class="rating"><i class="fa-solid fa-star"></i> 4.8 (124)</div>
+                    </div>
+                    <button class="btn-book interactive" onclick="app.bookService(this, 'Ram Kumar')">Book</button>
+                </div>
+
+                <div class="provider-card glass-card interactive hover-lift mt-md">
+                    <img src="https://i.pravatar.cc/150?img=52" alt="Ravi">
+                    <div class="provider-info">
+                        <h4 style="display:flex; align-items:center; gap:4px;">Ravi Sharma <i class="fa-solid fa-circle-check text-blue" title="Verified"></i></h4>
+                        <p>Electrician</p>
+                        <div class="rating"><i class="fa-solid fa-star"></i> 4.9 (89)</div>
+                    </div>
+                    <button class="btn-book interactive" onclick="app.bookService(this, 'Ravi Sharma')">Book</button>
+                </div>
+            </div>
+        </section>
+    </template>
+
+    <template id="tpl-community">
+        <section class="view" id="view-community">
+            <h2 class="page-title">Community Base</h2>
+            <div class="tab-pill-container slim mt-sm">
+                <button class="pill active comm-tab" data-target="feed-notices">Notices</button>
+                <button class="pill comm-tab" data-target="feed-polls">Live Polls</button>
+            </div>
+
+            <div class="feed mt-md" id="feed-notices">
+                <div class="feed-item glass-card interactive slide-in">
+                    <div class="feed-badge alert"><i class="fa-solid fa-triangle-exclamation"></i> URGENT</div>
+                    <div class="feed-content">
+                        <h4>Water Supply Interruption</h4>
+                        <p>Water will be shut off tomorrow (3rd April) from 1 PM to 4 PM for overhead tank cleaning.</p>
+                        <div class="feed-meta">Admin • Posted 1 hr ago</div>
+                    </div>
+                    <div class="feed-actions mt-sm">
+                        <button class="action-btn interact-like"><i class="fa-regular fa-heart"></i> <span class="count">24</span></button>
+                        <button class="action-btn"><i class="fa-solid fa-share-nodes"></i></button>
+                    </div>
+                </div>
+
+                <div class="feed-item glass-card interactive slide-in mt-md" style="animation-delay:0.1s;">
+                    <div class="feed-badge info"><i class="fa-solid fa-info-circle"></i> INFO</div>
+                    <div class="feed-content">
+                        <h4>Holi Celebration Photos</h4>
+                        <p>A huge thanks to everyone who joined! The photos are now available.</p>
+                        <img class="feed-img mt-sm" src="https://images.unsplash.com/photo-1551893478-d726eaf0442c?auto=format&fit=crop&w=500&q=60" alt="Holi Fest">
+                        <div class="feed-meta">Committee • Posted Yesterday</div>
+                    </div>
+                    <div class="feed-actions mt-sm">
+                        <button class="action-btn interact-like"><i class="fa-regular fa-heart"></i> <span class="count">108</span></button>
+                        <button class="action-btn"><i class="fa-regular fa-comment"></i> 12</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="feed mt-md hidden" id="feed-polls">
+                <div class="feed-item glass-card interactive slide-in">
+                    <div class="feed-badge" style="background:#dcfce7; color:#16a34a;"><i class="fa-solid fa-square-poll-vertical"></i> ACTIVE</div>
+                    <div class="feed-content">
+                        <h4 class="mt-sm">Should we install EV Chargers in the basement?</h4>
+                        <p style="font-size:0.85rem; margin-bottom:12px;">Closes in 2 days • 145 votes</p>
+                        <div class="poll-options">
+                            <button class="poll-btn interactive" onclick="app.votePoll(this, 'poll1')">Yes, absolutely <span class="poll-pct hidden">68%</span></button>
+                            <button class="poll-btn interactive" onclick="app.votePoll(this, 'poll1')">No, waste of funds <span class="poll-pct hidden">22%</span></button>
+                            <button class="poll-btn interactive" onclick="app.votePoll(this, 'poll1')">Need more info <span class="poll-pct hidden">10%</span></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </template>
+
+    <script src="app.js"></script>
+</body>
+</html>
